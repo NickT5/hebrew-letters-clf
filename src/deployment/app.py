@@ -1,14 +1,21 @@
-from flask import Flask, render_template, request, url_for, redirect
+from flask import Flask, render_template, request, url_for, redirect, session
 from flask_bootstrap import Bootstrap
 from fastai.vision import *
+import cv2
 
 
 app = Flask(__name__)
 Bootstrap(app)
-app.config['UPLOAD_FOLDER'] = './tmp'
+app.config['UPLOAD_FOLDER'] = 'static/img/tmp'
+app.secret_key = "SUpeR SeCREt KeY"
+
+# STATE variables
+STATE_START = 0
+STATE_READY_2_PREDICT = 1
+STATE_PREDICTION_DONE = 2
 
 
-def predict(p, img_name):
+def predict(p):
     path = Path(p)
     img = open_image(path)
 
@@ -36,35 +43,76 @@ def get_hebrew_unicode(letter):
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
+    # Get STATE.
+    if 'state' in session:
+        state = session['state']
+    else:
+        state = STATE_START
+        session['state'] = state
+
+    # Handle according to the STATE.
+    if state == STATE_START:
+        pass
+    elif state == STATE_READY_2_PREDICT:
+        pass
+    elif state == STATE_PREDICTION_DONE:
+        prediction = session.get('prediction')
+        hebrew_char = session.get('hebrew_char')
+        if prediction is None or hebrew_char is None:
+            return render_template('index.html', prediction="Something went wrong.", hebrew_char="")
+        else:
+            return render_template('index.html', prediction=prediction, hebrew_char=hebrew_char)
+    else:
+        print("Impossible state")
 
     return render_template("index.html")
 
 
 @app.route("/classify", methods=['POST'])
 def classify():
-    if 'file' in request.files:
+    if request.files['file'].filename == '':
+        return redirect(url_for('index'))
+        # todo render error page?
+    else:
+        # Get input image.
         img_file = request.files.get('file')
         img_name = img_file.filename
 
         # Save image in a tmp folder.
-        p = os.path.join(app.config['UPLOAD_FOLDER'], img_name)
-        img_file.save(p)
+        img_p = os.path.join(app.config['UPLOAD_FOLDER'], img_name)
+        img_file.save(img_p)
+
+        # Save image path to session.
+        session["img"] = img_p
 
         # Make a prediction.
-        prediction = predict(p, img_name)
-        prediction, _ = str(prediction).split('-')  # e.g. alef-1 --> alef
+        prediction = predict(img_p)
 
+        # Get unicode of prediction.
+        prediction, _ = str(prediction).split('-')  # e.g. alef-1 --> alef
         hebrew_char = get_hebrew_unicode(prediction)
 
+        # Set prediction, unicode and state in session.
+        session['prediction'] = prediction
+        session['hebrew_char'] = hebrew_char
+        session['state'] = STATE_PREDICTION_DONE
+
+    return redirect(url_for('index'))
+
+
+@app.route("/reset")
+def reset():
+    if 'img' in session:
+        img_p = session['img']
+
         # Delete image from tmp folder.
-        os.remove(os.path.join(app.config['UPLOAD_FOLDER'], img_name))
+        # todo maybe delete all image files in the dir instead one.
+        os.remove(img_p) if os.path.isfile(img_p) else print("File is already deleted.")
 
-    else:
-        print("error")
-        # todo render error page?
+        # Clear cache.
+        session.clear()
 
-#    return redirect(url_for('index'))
-    return render_template("index.html", prediction=prediction, hebrew_char=hebrew_char)
+    return redirect(url_for('index'))
 
 
 if __name__ == '__main__':
