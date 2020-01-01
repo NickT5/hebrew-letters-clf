@@ -6,13 +6,15 @@
 {% block body %}
 
     <div id="app">
-        <a href="/reset"><h1>Alef bet classifier</h1></a>
+        <a id="title" href="/reset"><h1>Alef bet classifier</h1></a>
         <form action="/classify" method="post" enctype="multipart/form-data">
             <div class="row">
-                <div class="col-sm-8">
+                <div class="col-sm-12">
                     <input class="btn btn-warning" type="file" accept="image/*" name="file" onchange="readURL(this);"/>
                 </div>
-                <div class="col-sm-4">
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
                     <input class="btn btn-success" type="submit" value="Classify"/>
                 </div>
             </div>
@@ -20,9 +22,9 @@
         <div class="row">
             <div class="col-sm-12">
                 {% if prediction is defined %}
-                    <img src="{{ session['img'] }}" id="img-area" alt="" width="100" height="100" />
+                    <img src="{{ session['img'] }}" id="img-area" alt="" class="maxDimensions" />
                 {% else %}
-                    <img id="img-area" alt="" width="100" height="100" />
+                    <img id="img-area" alt=""/>
                 {% endif %}
             </div>
         </div>
@@ -39,7 +41,7 @@
         </div>
         <div class="row">
             <div class="col-sm-12">
-                <a href="/reset"><button type="button" class="btn btn-info">Start a new classification.</button></a>
+                <a href="/reset"><button type="button" class="btn btn-info">Reset</button></a>
             </div>
         </div>
     </div>
@@ -59,7 +61,10 @@
                     reader.onload = function (e) {
                         $('#img-area')
                             .attr('src', e.target.result);
-                    };
+                      };
+
+                    var myElement = document.querySelector("#img-area")
+                    myElement.classList.add("maxDimensions");
 
                     reader.readAsDataURL(input.files[0]);
                 }
