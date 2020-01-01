@@ -4,9 +4,12 @@
 
 
 {% block body %}
-
     <div id="app">
-        <a id="title" href="/reset"><h1>Alef bet classifier</h1></a>
+        <div id="title" class="row">
+            <div class="col">
+                <a id="title" href="/reset"><h1>Alef bet classifier</h1></a>
+            </div>
+        </div>
         <form action="/classify" method="post" enctype="multipart/form-data">
             <div class="row">
                 <div class="col-sm-12">
@@ -15,7 +18,7 @@
             </div>
             <div class="row">
                 <div class="col-sm-12">
-                    <input class="btn btn-success" type="submit" value="Classify"/>
+                    <input class="btn btn-success" type="submit" value="Analyze"/>
                 </div>
             </div>
         </form>
@@ -46,7 +49,7 @@
         </div>
     </div>
 
-    <footer >
+    <footer>
         <p>The alef bet</p>
         <p>&#1488; &#64305; &#1489; &#1490; &#1491; &#1492; &#1493; &#1494; &#1495; &#1496; &#1497; &#64315; &#64314; &#1499; &#1498; &#1500; &#1502; &#1501; &#1504; &#1503; &#1505; &#1506; &#64324; &#64323; &#1508; &#1507; &#1510; &#1509; &#1511; &#1512; &#64298; &#64299; &#1514;<p/>
     </footer>
