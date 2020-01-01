@@ -6,7 +6,7 @@
 {% block body %}
 
     <div id="app">
-        <h1>Alef bet classifier</h1>
+        <a href="/reset"><h1>Alef bet classifier</h1></a>
         <form action="/classify" method="post" enctype="multipart/form-data">
             <div class="row">
                 <div class="col-sm-8">
@@ -18,11 +18,28 @@
             </div>
         </form>
         <div class="row">
-            <div class="col-sm-8">
-                <img id="img-area" alt="" />
+            <div class="col-sm-12">
+                {% if prediction is defined %}
+                    <img src="{{ session['img'] }}" id="img-area" alt="" width="100" height="100" />
+                {% else %}
+                    <img id="img-area" alt="" width="100" height="100" />
+                {% endif %}
             </div>
-            <div class="col-sm-4">
-                <div id="pred-area">{{ hebrew_char|safe }} {{ prediction }} </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <h2 id="pred-area">
+                {% if prediction is defined %}
+                    Prediction: {{ prediction }} [{{ hebrew_char|safe }}]
+                {% else %}
+
+                {% endif %}
+                </h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <a href="/reset"><button type="button" class="btn btn-info">Start a new classification.</button></a>
             </div>
         </div>
     </div>
