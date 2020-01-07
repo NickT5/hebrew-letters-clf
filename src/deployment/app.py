@@ -7,7 +7,7 @@ import cv2
 app = Flask(__name__)
 Bootstrap(app)
 app.config['UPLOAD_FOLDER'] = 'static/img/tmp'
-app.secret_key = "SUpeR SeCREt KeY"
+app.secret_key = "SUpeR SeCREt KeY" #todo put this in a env file and load that file in app.py
 
 # STATE variables
 STATE_START = 0
@@ -113,6 +113,11 @@ def reset():
         session.clear()
 
     return redirect(url_for('index'))
+
+
+@app.route('/draw')
+def draw():
+    return render_template('draw.html')
 
 
 if __name__ == '__main__':

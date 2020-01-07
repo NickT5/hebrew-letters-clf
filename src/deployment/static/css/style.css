@@ -1,11 +1,13 @@
-@import url('https://fonts.googleapis.com/css?family=Tangerine&display=swap');
+/*@import url('https://fonts.googleapis.com/css?family=Tangerine&display=swap');*/
 @import url('https://fonts.googleapis.com/css?family=Merienda+One&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Inria+Serif&display=swap');
 
 body{
     width: 100%;
     height: 100vh;
     /*background-image: url('https://source.unsplash.com/BtbjCFUvBXs/1920x1080');*/
-    background-image: url('https://source.unsplash.com/V2OyJtFqEtY/1920x1080');
+    background-image: url('../img/unsplash-BtbjCFUvBXs.jpg');
+    /*background-image: url('https://source.unsplash.com/V2OyJtFqEtY/1920x1080');*/
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -46,6 +48,10 @@ button{
     outline: none;
     border-style: none;
     outline: none;*/
+}
+
+#pred-area{
+    font-family: 'Inria Serif', serif;
 }
 
 .maxDimensions{
