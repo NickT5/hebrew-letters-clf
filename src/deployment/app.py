@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, url_for, redirect, session
 from flask_bootstrap import Bootstrap
 from fastai.vision import *
+import base64
 import cv2
 
 
@@ -118,6 +119,20 @@ def reset():
 @app.route('/draw')
 def draw():
     return render_template('draw.html')
+
+
+@app.route('/getdrawing', methods=['POST'])
+def getdrawing():
+    # Get the data from the post request (data a is base64 encoded string).
+    print(request.form.get('drawing').replace("data:image/png;base64,", ""))
+    img64 = request.form.get('drawing').replace("data:image/png;base64,", "")
+
+    # Decode base64 string and save it as an image on our filesystem.
+    img_p = os.path.join(app.config['UPLOAD_FOLDER'], "drawing.jpg")
+    with open(img_p, "wb") as fh:
+        fh.write(base64.decodebytes(img64.encode()))
+
+    return redirect(url_for('index'))
 
 
 if __name__ == '__main__':

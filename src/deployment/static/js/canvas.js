@@ -2,7 +2,8 @@ window.addEventListener('load', () => {
     const canvas = document.querySelector('#canvas');
     const ctx = canvas.getContext('2d');
 
-    const btnClear = document.querySelector('#btnClear');
+    const btnClear = document.getElementById('btnClear');
+    const btnSubmit = document.getElementById('submit');
 
     let isDrawing = false;
 
@@ -21,6 +22,7 @@ window.addEventListener('load', () => {
     function stop(){
         isDrawing = false;
         ctx.beginPath();
+        setDrawing();
     }
 
     function draw({clientX: mx, clientY: my}){
@@ -47,11 +49,17 @@ window.addEventListener('load', () => {
         ctx.clearRect(0,0 , canvas.width, canvas.height);
     }
 
+    function setDrawing(){
+        //document.getElementById('data').value = canvas.toDataURL("image/jpeg");
+        document.getElementById('data').value = canvas.toDataURL();
+    }
+
     //EventListeners
     canvas.addEventListener('mousedown', start);
     canvas.addEventListener('mousemove', draw);
     canvas.addEventListener('mouseup', stop);
     btnClear.addEventListener('click', clearCanvas);
+    //btnSubmit.addEventListener('click', setDrawing);
 
     resizeCanvas(150, 150);
 
