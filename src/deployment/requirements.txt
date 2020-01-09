@@ -2,3 +2,4 @@ Flask==1.1.1
 fastai==1.0.59
 Flask_Bootstrap==3.3.7.1
 Pillow==7.0.0
+torch==https://download.pytorch.org/whl/cpu/torch-1.0.1.post2-cp37-cp37m-linux_x86_64.whl
