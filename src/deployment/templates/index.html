@@ -36,6 +36,16 @@
                     </form>
                 </div>
             </div>
+            <!-- DRAWING FROM SESSION -->
+            <div class="row">
+                <div class="col-sm-12">
+                    {% if prediction is defined %}
+                        <img src="{{ session['img'] }}" id="img-area" alt="" class="maxDimensions" />
+                    {% else %}
+                        <img id="img-area" alt=""/>
+                    {% endif %}
+                </div>
+            </div>
             <!-- PREDICTION -->
             <div class="row">
                 <div class="col-sm-12">
