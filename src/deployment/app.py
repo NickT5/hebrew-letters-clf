@@ -4,7 +4,6 @@ from fastai.vision import *
 import base64
 from PIL import Image
 from uuid import uuid4
-import cv2
 
 
 app = Flask(__name__)
