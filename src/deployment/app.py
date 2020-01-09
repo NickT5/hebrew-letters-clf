@@ -65,6 +65,9 @@ def get_hebrew_unicode(letter):
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
+    with open("test.txt", "w") as text_file:
+        print("Do I have permission to save a file Heroku?", file=text_file)
+
     # Get STATE.
     if 'state' in session:
         state = session['state']
