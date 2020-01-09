@@ -41,6 +41,14 @@ def predict(p):
     # Make prediction
     predicted_class, predicted_label, predicted_probs = learner.predict(img)
 
+    # Check if probability is larger than a certain threshold.
+    max_prob = predicted_probs.max().item()  # Get maximum probability as a float
+    print("probability: ", max_prob)
+    if max_prob < 0.85:
+        predicted_class = "Not a hebrew character."
+    else:
+        predicted_class, _ = str(predicted_class).split('-')  # e.g. alef-1 --> alef
+
     return predicted_class
 
 
@@ -173,8 +181,9 @@ def classify_drawing():
         prediction = predict(img_p)
 
         # Get unicode of prediction.
-        prediction, _ = str(prediction).split('-')  # e.g. alef-1 --> alef
-        hebrew_char = get_hebrew_unicode(prediction)
+        hebrew_char = ""
+        if prediction != "Not a hebrew character.":
+            hebrew_char = get_hebrew_unicode(prediction)
 
         print("prediction :", prediction)
 
