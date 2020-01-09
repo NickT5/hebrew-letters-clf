@@ -4,7 +4,6 @@ from fastai.vision import *
 import base64
 from PIL import Image
 from uuid import uuid4
-from torchvision.utils import save_image
 import cv2
 
 
@@ -62,7 +61,7 @@ def get_hebrew_unicode(letter):
         'fei-final': '&#1507;', 'tsade': '&#1510;', 'tsade-final': '&#1509;', 'quf': '&#1511;', 'reish': '&#1512; ',
         'shin': '&#64298;', 'sin': '&#64299;', 'tav': '&#1514;'
     }
-    return hebrew_unicodes.get(letter).strip()  # todo insert default value if it can't find anything
+    return hebrew_unicodes.get(letter, ' ').strip("'")
 
 
 @app.route("/", methods=['GET', 'POST'])
@@ -87,7 +86,7 @@ def index():
         else:
             return render_template('index.html', prediction=prediction, hebrew_char=hebrew_char)
     else:
-        print("Impossible state")
+        print("Oops. Something went wrong.")
 
     return render_template("index.html")
 
@@ -127,35 +126,6 @@ def classify():
 @app.route("/reset")
 def reset():
     session.clear()
-
-    # todo use state ipv session img
-    #if 'img' in session:
-    #    img_p = session['img']
-    #
-    #    # Delete image from tmp folder.
-    #    os.remove(img_p) if os.path.isfile(img_p) else print("File is already deleted.")
-    #
-    #    # Clear cache.
-    #    session.clear()
-
-    return redirect(url_for('index'))
-
-
-@app.route('/draw')
-def draw():
-    return render_template('draw.html')
-
-
-@app.route('/getdrawing', methods=['POST'])
-def getdrawing():
-    # Get the data from the post request (data a is base64 encoded string).
-    img64 = request.form.get('drawing').replace("data:image/png;base64,", "")
-
-    # Decode base64 string and save it as an image on our filesystem.
-    img_p = os.path.join(app.config['UPLOAD_FOLDER'], "drawing.jpg")
-    with open(img_p, "wb") as fh:
-        fh.write(base64.decodebytes(img64.encode()))
-
     return redirect(url_for('index'))
 
 
@@ -174,16 +144,14 @@ def classify_drawing():
         with open(img_p, "wb") as fh:
             fh.write(base64.decodebytes(img64.encode()))
 
-        # Preprocess the image (resize and saving it in a correct format).
+        # Pre process the image (resize and saving it in a correct format).
         preprocessing(img_p)
 
         # Make a prediction.
         prediction = predict(img_p)
 
         # Get unicode of prediction.
-        hebrew_char = ""
-        if prediction != "Not a hebrew character.":
-            hebrew_char = get_hebrew_unicode(prediction)
+        hebrew_char = get_hebrew_unicode(prediction)
 
         print("prediction :", prediction)
 
