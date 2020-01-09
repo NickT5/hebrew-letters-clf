@@ -35,7 +35,7 @@ def predict(p):
     img = open_image(path)
 
     # Load model
-    learner = load_learner(Path('../model'))
+    learner = load_learner(Path('./model'))
 
     # Make prediction
     predicted_class, predicted_label, predicted_probs = learner.predict(img)
