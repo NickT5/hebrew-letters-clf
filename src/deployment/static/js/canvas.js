@@ -15,11 +15,13 @@ window.addEventListener('load', () => {
     }
 
     function start(event){
+        console.log('start')
         isDrawing = true;
         draw(event);
     }
 
     function stop(){
+        console.log('stop')
         isDrawing = false;
         ctx.beginPath();
         setDrawing();

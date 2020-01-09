@@ -2,9 +2,6 @@
 
 {% block title %} Draw {% endblock %}
 
-{% block styles %}
-    <!-- debugging: turned off stylesheet, canvas drawing not working with css-->
-{% endblock %}
 
 {% block body %}
     {% block scripts %}
@@ -13,7 +10,7 @@
     {% endblock %}
 
 
-      <div class="container text-center">
+      <div class="my-center overlay text-center">
             <!-- TITLE -->
             <div class="row">
                 <div class="col-sm-12">
@@ -21,12 +18,12 @@
                 </div>
             </div>
             <!-- FORM -->
-            <div class="row">
-                <div class="col-sm-12">
+            <div>
+                <div>
                     <form action="/classify_drawing" method="post" enctype="application/x-www-form-urlencoded">
-                        <div class="form-group">
+                        <div>
                             <input id="data" type="hidden" name="drawing"/>
-                            <canvas id="canvas" style="width: 150px; height: 150px; z-index: 1; border: 2px solid black;"></canvas>
+                            <canvas id="canvas"></canvas>
                         </div>
                         <div class="form-group">
                             <input id="btnClear" class="btn btn-danger" type="button" value="Clear drawing"/>
@@ -40,9 +37,9 @@
             <div class="row">
                 <div class="col-sm-12">
                     {% if prediction is defined %}
-                        <img src="{{ session['img'] }}" id="img-area" alt="" class="maxDimensions" />
+                        <img src="{{ session['img'] }}" class="img-area" alt="" class="maxDimensions" />
                     {% else %}
-                        <img id="img-area" alt=""/>
+                        <img class="img-area" alt=""/>
                     {% endif %}
                 </div>
             </div>
