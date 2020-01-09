@@ -2,6 +2,9 @@ from flask import Flask, render_template, request, url_for, redirect, session
 from flask_bootstrap import Bootstrap
 from fastai.vision import *
 import base64
+from PIL import Image
+from uuid import uuid4
+from torchvision.utils import save_image
 import cv2
 
 
@@ -14,6 +17,18 @@ app.secret_key = "SUpeR SeCREt KeY" #todo put this in a env file and load that f
 STATE_START = 0
 STATE_READY_2_PREDICT = 1
 STATE_PREDICTION_DONE = 2
+
+
+def preprocessing(p):
+    # adapted from https://stackoverflow.com/questions/9166400/convert-rgba-png-to-rgb-with-pil
+    # issue: drawing is an image with 4 channels. The 4th being the alpha channel. When using fastai open_image(), the
+    # image is completely black. This function removes the alpha channel and resizes the image.
+    img = Image.open(p)
+    img.thumbnail((56, 56))  # Resize to 56x56 (size of CNN trainingsdata)
+    img.load()  # needed for split()
+    background = Image.new('RGB', img.size, (255, 255, 255))
+    background.paste(img, mask=img.split()[3])  # 3 is the alpha channel
+    background.save(p)
 
 
 def predict(p):
@@ -103,15 +118,17 @@ def classify():
 
 @app.route("/reset")
 def reset():
-    if 'img' in session:
-        img_p = session['img']
+    session.clear()
 
-        # Delete image from tmp folder.
-        # todo maybe delete all image files in the dir instead one.
-        os.remove(img_p) if os.path.isfile(img_p) else print("File is already deleted.")
-
-        # Clear cache.
-        session.clear()
+    # todo use state ipv session img
+    #if 'img' in session:
+    #    img_p = session['img']
+    #
+    #    # Delete image from tmp folder.
+    #    os.remove(img_p) if os.path.isfile(img_p) else print("File is already deleted.")
+    #
+    #    # Clear cache.
+    #    session.clear()
 
     return redirect(url_for('index'))
 
@@ -124,13 +141,48 @@ def draw():
 @app.route('/getdrawing', methods=['POST'])
 def getdrawing():
     # Get the data from the post request (data a is base64 encoded string).
-    print(request.form.get('drawing').replace("data:image/png;base64,", ""))
     img64 = request.form.get('drawing').replace("data:image/png;base64,", "")
 
     # Decode base64 string and save it as an image on our filesystem.
     img_p = os.path.join(app.config['UPLOAD_FOLDER'], "drawing.jpg")
     with open(img_p, "wb") as fh:
         fh.write(base64.decodebytes(img64.encode()))
+
+    return redirect(url_for('index'))
+
+
+@app.route("/classify_drawing", methods=['POST'])
+def classify_drawing():
+    # Get the data from the post request (data a is base64 encoded string).
+    img64 = request.form.get('drawing').replace("data:image/png;base64,", "")
+
+    if img64 == '':
+        return redirect(url_for('index'))
+        # todo render error page?
+    else:
+        # Decode base64 string and save it as an image on our filesystem.
+        unique_name = f"{uuid4().hex}.png"  # Create unique img name. Use imgs later for extra training.
+        img_p = os.path.join(app.config['UPLOAD_FOLDER'], unique_name)
+        with open(img_p, "wb") as fh:
+            fh.write(base64.decodebytes(img64.encode()))
+
+        # Preprocess the image (resize and saving it in a correct format).
+        preprocessing(img_p)
+
+        # Make a prediction.
+        prediction = predict(img_p)
+
+        # Get unicode of prediction.
+        prediction, _ = str(prediction).split('-')  # e.g. alef-1 --> alef
+        hebrew_char = get_hebrew_unicode(prediction)
+
+        print("prediction :", prediction)
+
+        # Set image, prediction, unicode and state in session.
+        session["img"] = img_p
+        session['prediction'] = prediction
+        session['hebrew_char'] = hebrew_char
+        session['state'] = STATE_PREDICTION_DONE
 
     return redirect(url_for('index'))
 

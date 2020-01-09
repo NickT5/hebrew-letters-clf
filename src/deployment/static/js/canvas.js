@@ -1,9 +1,9 @@
 window.addEventListener('load', () => {
-    const canvas = document.querySelector('#canvas');
+    const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
 
     const btnClear = document.getElementById('btnClear');
-    const btnSubmit = document.getElementById('submit');
+    //const btnSubmit = document.getElementById('submit');
 
     let isDrawing = false;
 
@@ -34,9 +34,9 @@ window.addEventListener('load', () => {
         //if(x <= 0 || x >= canvas.width) isDrawing = false; return;
         //if(y <= 0 || y >= canvas.height) isDrawing = false; return;
 
-        ctx.lineWidth = 3;
+        ctx.lineWidth = 9;
         ctx.lineCap = "round";
-        ctx.strokeStyle = "#000000";
+        ctx.strokeStyle = "#000000"; //black color
 
         ctx.lineTo(x, y);
         ctx.stroke();
@@ -47,10 +47,11 @@ window.addEventListener('load', () => {
 
     function clearCanvas(){
         ctx.clearRect(0,0 , canvas.width, canvas.height);
+        document.getElementById('data').value = ""
     }
 
     function setDrawing(){
-        //document.getElementById('data').value = canvas.toDataURL("image/jpeg");
+        //document.getElementById('data').value = canvas.toDataURL('image/jpeg', 1.0);
         document.getElementById('data').value = canvas.toDataURL();
     }
 

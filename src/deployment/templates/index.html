@@ -1,84 +1,61 @@
 {% extends "layout.html" %}
 
-{% block title %} Hebrew letter CLF {% endblock %}
+{% block title %} Draw {% endblock %}
 
+{% block styles %}
+    <!-- debugging: turned off stylesheet, canvas drawing not working with css-->
+{% endblock %}
 
 {% block body %}
-    <div id="app">
-        <div id="title" class="row">
-            <div class="col">
-                <a id="title" href="/reset"><h1>Alef bet classifier</h1></a>
-            </div>
-        </div>
-        <form action="/classify" method="post" enctype="multipart/form-data">
-            <div class="row">
-                <div class="col-sm-12">
-                    <input class="btn btn-warning" type="file" accept="image/*" name="file" onchange="readURL(this);"/>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-12">
-                    <input class="btn btn-success" type="submit" value="Analyze"/>
-                </div>
-            </div>
-        </form>
-        <div class="row">
-            <div class="col-sm-12">
-                {% if prediction is defined %}
-                    <img src="{{ session['img'] }}" id="img-area" alt="" class="maxDimensions" />
-                {% else %}
-                    <img id="img-area" alt=""/>
-                {% endif %}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <h2 id="pred-area">
-                {% if prediction is defined %}
-                    Prediction: {{ prediction }} [{{ hebrew_char|safe }}]
-                {% else %}
+    {% block scripts %}
+        {{super()}}
+        <script src="{{url_for('static', filename='js/canvas.js')}}"></script>
+    {% endblock %}
 
-                {% endif %}
-                </h2>
+
+      <div class="container text-center">
+            <!-- TITLE -->
+            <div class="row">
+                <div class="col-sm-12">
+                    <a id="title" href="/reset"><h1>Alef bet classifier</h1></a>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <a href="/reset"><button type="button" class="btn btn-info">Reset</button></a>
+            <!-- FORM -->
+            <div class="row">
+                <div class="col-sm-12">
+                    <form action="/classify_drawing" method="post" enctype="application/x-www-form-urlencoded">
+                        <div class="form-group">
+                            <input id="data" type="hidden" name="drawing"/>
+                            <canvas id="canvas" style="width: 150px; height: 150px; z-index: 1; border: 2px solid black;"></canvas>
+                        </div>
+                        <div class="form-group">
+                            <input id="btnClear" class="btn btn-danger" type="button" value="Clear drawing"/>
+                            <input class="btn btn-success" id="submit" type="submit" value="Analyze"/>
+                            <!--<a href="/reset"><button type="button" class="btn btn-info">Reset</button></a>-->
+                        </div>
+                    </form>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <a href="/draw"><button type="button" class="btn btn-danger">Draw</button></a>
+            <!-- PREDICTION -->
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2 id="pred-area">
+                    {% if prediction is defined %}
+                        Prediction: {{ prediction }} [{{ hebrew_char|safe }}]
+                    {% else %}
+
+                    {% endif %}
+                    </h2>
+                </div>
             </div>
-        </div>
+
     </div>
+
 
     <footer>
         <p>The alef bet</p>
         <p>&#1488; &#64305; &#1489; &#1490; &#1491; &#1492; &#1493; &#1494; &#1495; &#1496; &#1497; &#64315; &#64314; &#1499; &#1498; &#1500; &#1502; &#1501; &#1504; &#1503; &#1505; &#1506; &#64324; &#64323; &#1508; &#1507; &#1510; &#1509; &#1511; &#1512; &#64298; &#64299; &#1514;<p/>
     </footer>
-
-    {% block scripts %}
-        {{ super() }}
-        <script>
-            function readURL(input) {
-                if (input.files && input.files[0]) {
-                    var reader = new FileReader();
-
-                    reader.onload = function (e) {
-                        $('#img-area')
-                            .attr('src', e.target.result);
-                      };
-
-                    var myElement = document.querySelector("#img-area")
-                    myElement.classList.add("maxDimensions");
-
-                    reader.readAsDataURL(input.files[0]);
-                }
-            }
-        </script>
-    {% endblock %}
 
 {% endblock %}
 
