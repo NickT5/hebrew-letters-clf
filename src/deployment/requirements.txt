@@ -1,0 +1,4 @@
+Flask==1.1.1
+fastai==1.0.59
+Flask_Bootstrap==3.3.7.1
+Pillow==7.0.0
