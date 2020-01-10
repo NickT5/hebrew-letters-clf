@@ -1,10 +1,15 @@
 # Hebrew letters Classifier
-Classify handwritten Hebrew letters.
+This project is a web application that lets the user draw a Hebrew letter and classifies it using deep learning.
 
-## Installation progress
-- Create new repo <hebrew-letters-clf> on GitHub.
-- git clone <hebrew-letters-clf>
-- conda create -n fastai
-- conda activate fastai
-- conda install -c pytorch -c fastai fastai
-- conda install nb_conda
+## Demo
+![Hebrew letter classifier demo](demo/demo.gif)
+
+## Technologies used
+* Flask (Python for the web)
+* fastai (Deep learning library on top of PyTorch)
+* Javascript
+* HTML
+* CSS
+* Bootstrap
+* (Kaggle) Jupyter notebook 
+* conda
