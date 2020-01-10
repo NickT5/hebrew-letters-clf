@@ -17,6 +17,20 @@ STATE_READY_2_PREDICT = 1
 STATE_PREDICTION_DONE = 2
 
 
+def setup():
+    # setup function runs once at start up.
+    print('setup')
+    create_upload_dir(app.config.get('UPLOAD_FOLDER'))
+
+
+def create_upload_dir(directory):
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+        print(f"Created directory {directory}")
+    else:
+        print(f"Directory {directory} already exists.")
+
+
 def preprocessing(p):
     # adapted from https://stackoverflow.com/questions/9166400/convert-rgba-png-to-rgb-with-pil
     # issue: drawing is an image with 4 channels. The 4th being the alpha channel. When using fastai open_image(), the
@@ -65,9 +79,6 @@ def get_hebrew_unicode(letter):
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
-    with open("test.txt", "w") as text_file:
-        print("Do I have permission to save a file Heroku?", file=text_file)
-
     # Get STATE.
     if 'state' in session:
         state = session['state']
@@ -167,4 +178,5 @@ def classify_drawing():
 
 
 if __name__ == '__main__':
+    setup()
     app.run(debug=True)
